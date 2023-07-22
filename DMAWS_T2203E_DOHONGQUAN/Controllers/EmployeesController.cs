@@ -120,6 +120,55 @@ namespace DMAWS_T2203E_DOHONGQUAN.Controllers
             return (_context.Employees?.Any(e => e.EmployeeId == id)).GetValueOrDefault();
         }
 
-       
+        [HttpGet("SearchProjects/{projectName}")]
+        public IActionResult SearchProject(string projectName)
+        {
+            var projects = _context.Projects
+                .Where(p => p.ProjectName.Contains(projectName))
+                .ToList();
+
+            return Ok(projects);
+        }
+
+        [HttpGet("InProgressProjects")]
+        public IActionResult InProgressProjects()
+        {
+            var currentTime = DateTime.Now;
+            var inProgressProjects = _context.Projects
+                .Where(p => p.ProjectEndDate == null || p.ProjectEndDate > currentTime)
+                .ToList();
+
+            return Ok(inProgressProjects);
+        }
+
+        [HttpGet("FinishedProjects")]
+        public IActionResult FinishedProjects()
+        {
+            var currentTime = DateTime.Now;
+            var finishedProjects = _context.Projects
+                .Where(p => p.ProjectEndDate != null && p.ProjectEndDate <= currentTime)
+                .ToList();
+
+            return Ok(finishedProjects);
+        }
+
+        [HttpGet]
+        [Route("DetailsProject")]
+        public IActionResult Get(int id)
+        {
+            var projects = _context.Projects.Where(e => e.ProjectId == id).Include(e => e.ProjectEmployees);
+            if (projects == null)
+                return NotFound();
+            return Ok(projects);
+        }
+        [HttpGet]
+        [Route("DetaisEmployees")]
+        public IActionResult GetDetaisEmployees(int id)
+        {
+            var employees = _context.Employees.Where(e => e.EmployeeId == id).Include(e => e.ProjectEmployees);
+            if (employees == null)
+                return NotFound();
+            return Ok(employees);
+        }
     }
 }
