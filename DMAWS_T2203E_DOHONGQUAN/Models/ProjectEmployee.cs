@@ -13,6 +13,6 @@ namespace DMAWS_T2203E_DOHONGQUAN.Models
         
         public virtual Employee Employees { get; set; }
         
-        public virtual Project Projects { get; set; }
+        public virtual Project Project { get; set; }
     }
 }

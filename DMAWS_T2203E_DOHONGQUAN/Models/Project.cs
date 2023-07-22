@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using DMAWS_T2203E_DOHONGQUAN.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace DMAWS_T2203E_DOHONGQUAN.Models
 {
@@ -17,4 +20,6 @@ namespace DMAWS_T2203E_DOHONGQUAN.Models
         public virtual ICollection<ProjectEmployee> ProjectEmployees { get; set; }
 
     }
+
+
 }

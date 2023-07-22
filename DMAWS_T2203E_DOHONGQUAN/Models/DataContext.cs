@@ -18,7 +18,7 @@ namespace DMAWS_T2203E_DOHONGQUAN.Models
                 .HasForeignKey(pe => pe.EmployeeId);
 
             modelBuilder.Entity<ProjectEmployee>()
-                .HasOne(pe => pe.Projects)
+                .HasOne(pe => pe.Project)
                 .WithMany(p => p.ProjectEmployees)
                 .HasForeignKey(pe => pe.ProjectId);
 
