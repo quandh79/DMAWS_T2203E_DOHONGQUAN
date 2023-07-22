@@ -120,44 +120,6 @@ namespace DMAWS_T2203E_DOHONGQUAN.Controllers
             return (_context.Employees?.Any(e => e.EmployeeId == id)).GetValueOrDefault();
         }
 
-        [HttpGet("search")]
-        public IActionResult Search(string employeeName, DateTime? fromDate = null, DateTime? toDate = null)
-        {
-            IQueryable<Employee> query = _context.Employees;
-
-            if (!string.IsNullOrEmpty(employeeName))
-            {
-                query = query.Where(e => e.EmployeeName.Contains(employeeName));
-            }
-
-            if (fromDate.HasValue)
-            {
-                query = query.Where(e => e.EmployeeDOB >= fromDate.Value);
-            }
-
-            if (toDate.HasValue)
-            {
-                query = query.Where(e => e.EmployeeDOB <= toDate.Value);
-            }
-
-            var employees = query.ToList();
-            return Ok(employees);
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult GetEmployeeDetails(int id)
-        {
-            var employee = _context.Employees
-                .Include(e => e.ProjectEmployees)
-                .ThenInclude(pe => pe.Project)
-                .FirstOrDefault(e => e.EmployeeId == id);
-
-            if (employee == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(employee);
-        }
+       
     }
 }

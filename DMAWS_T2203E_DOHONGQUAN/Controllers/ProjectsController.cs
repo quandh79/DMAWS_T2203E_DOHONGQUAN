@@ -120,47 +120,46 @@ namespace DMAWS_T2203E_DOHONGQUAN.Controllers
             return (_context.Projects?.Any(e => e.ProjectId == id)).GetValueOrDefault();
         }
 
-        [HttpGet("search")]
-        public IActionResult Search(string projectName, bool? inProgress = null)
+        [HttpGet("SearchProjects/{projectName}")]
+        public IActionResult SearchProject(string projectName)
         {
-            IQueryable<Project> query = _context.Projects;
+            var projects = _context.Projects
+                .Where(p => p.ProjectName.Contains(projectName))
+                .ToList();
 
-            if (!string.IsNullOrEmpty(projectName))
-            {
-                query = query.Where(p => p.ProjectName.Contains(projectName));
-            }
-
-            if (inProgress.HasValue)
-            {
-                DateTime currentDate = DateTime.Now;
-                if (inProgress.Value)
-                {
-                    query = query.Where(p => p.ProjectEndDate == null || p.ProjectEndDate > currentDate);
-                }
-                else
-                {
-                    query = query.Where(p => p.ProjectEndDate != null && p.ProjectEndDate <= currentDate);
-                }
-            }
-
-            var projects = query.ToList();
             return Ok(projects);
         }
 
-        [HttpGet("{id}")]
-public IActionResult GetProjectDetails(int id)
-{
-    var project = _context.Projects
-        .Include(p => p.ProjectEmployees)
-        .ThenInclude(pe => pe.Employee)
-        .FirstOrDefault(p => p.ProjectId == id);
+        [HttpGet("InProgressProjects")]
+        public IActionResult InProgressProjects()
+        {
+            var currentTime = DateTime.Now;
+            var inProgressProjects = _context.Projects
+                .Where(p => p.ProjectEndDate == null || p.ProjectEndDate > currentTime)
+                .ToList();
 
-    if (project == null)
-    {
-        return NotFound();
-    }
+            return Ok(inProgressProjects);
+        }
 
-    return Ok(project);
-}
+        [HttpGet("FinishedProjects")]
+        public IActionResult FinishedProjects()
+        {
+            var currentTime = DateTime.Now;
+            var finishedProjects = _context.Projects
+                .Where(p => p.ProjectEndDate != null && p.ProjectEndDate <= currentTime)
+                .ToList();
+
+            return Ok(finishedProjects);
+        }
+
+        [HttpGet]
+        [Route("DetailsProject")]
+        public IActionResult Get(int id)
+        {
+            var projects = _context.Projects.Where(e => e.ProjectId == id).Include(e => e.ProjectEmployees);
+            if (projects == null)
+                return NotFound();
+            return Ok(projects);
+        }
     }
 }
